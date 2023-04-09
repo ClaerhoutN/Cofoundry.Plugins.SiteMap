@@ -22,7 +22,7 @@ jobs:
         run: echo "date=$(date +'0.%y.%m.%d')" >> $GITHUB_OUTPUT
       
       - name: Add GitHub NuGet Source
-        run: dotnet nuget add source "https://nuget.pkg.github.com/${{vars.NAMESPACE}}/index.json" -n github -p ${{secrets.PACKAGE_TOKEN}} --store-password-in-clear-text
+        run: dotnet nuget add source "https://nuget.pkg.github.com/${{vars.NAMESPACE}}/index.json" -n github -u ${{secrets.PACKAGE_USER}} -p ${{secrets.PACKAGE_TOKEN}} --store-password-in-clear-text
           
       - name: Build solution and generate NuGet package
         run: dotnet pack -c Release -o out --include-source -p:PackageVersion=${{steps.version.outputs.date}}
