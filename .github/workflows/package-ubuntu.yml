@@ -20,9 +20,12 @@ jobs:
       - name: Generate package version
         id: version
         run: echo "date=$(date +'0.%y.%m.%d')" >> $GITHUB_OUTPUT
+      
+      - name: Add GitHub NuGet Source
+        run: dotnet nuget add source "https://nuget.pkg.github.com/${{vars.NAMESPACE}}/index.json" -n github -p ${{secrets.PACKAGE_TOKEN}} --store-password-in-clear-text
           
       - name: Build solution and generate NuGet package
-        run: dotnet pack -c Release -o out --include-source -p:PackageVersion=${{steps.version.outputs.date}} --source "https://nuget.pkg.github.com/${{vars.NAMESPACE}}/index.json"
+        run: dotnet pack -c Release -o out --include-source -p:PackageVersion=${{steps.version.outputs.date}}
         
       - name: Push generated package to GitHub registry
         run: dotnet nuget push ./out/*.nupkg --skip-duplicate --api-key ${{secrets.PACKAGE_TOKEN}} --source "https://nuget.pkg.github.com/${{vars.NAMESPACE}}/index.json"
